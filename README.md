@@ -6,7 +6,7 @@
 
 ## 👁️ Overview
 
-**Gallery 404: The 10-Floor Tower of Judgment** (also titled **The Tower of Justice**) is a first-person 3D browser escape-room satire. Players find themselves trapped in a minimalist, neon-etched testing complex where every floor personifies a classic developer or academic nightmare: procrastination, corporate sycophancy, CSS centering agony, tutorial hell, imposter syndrome, and burnout.
+**The 10-Floor Tower of Judgment** (also titled **The Tower of Justice**) is a first-person 3D browser escape-room satire. Players find themselves trapped in a minimalist, neon-etched testing complex where every floor personifies a classic developer or academic nightmare: procrastination, corporate sycophancy, CSS centering agony, tutorial hell, imposter syndrome, and burnout.
 
 Unlike standard escape rooms that rely on point-and-click pixel hunting, **The Tower of Judgment** evaluates behavioral and spatial input: ramming walls with your head, spinning in an executive office chair, freezing in pure panic, or frantically scrolling into the void.
 
@@ -48,18 +48,18 @@ Unlike standard escape rooms that rely on point-and-click pixel hunting, **The T
 
 To decrypt the clues on any floor, you must first obtain Curator clearance (by stealthily approaching and clicking the roaming **"Beg Curator for Hint"** button) and perform the floor's specific behavior:
 
-| Tier | Floor Name | Decryption Mechanism | Solution Passphrase |
+| Tier | Floor Name | Decryption Mechanism |
 | :---: | :--- | :--- | :---: |
-| **0** | **Ground Zero: Procrastination** | Repeatedly ram into walls until structural integrity cracks | `focus` |
-| **1** | **Corporate Sycophant Suite** | Hold <kbd>Q</kbd> or <kbd>E</kbd> to complete a 360° executive swivel | `synergy` |
-| **2** | **Overleaf & Academic Hell** | Stop all input and freeze in dead silence for 3.5 seconds | `panic` |
-| **3** | **CSS Centering Purgatory** | Stand dead in the exact center ($X \approx 0, Z \approx 0$) for 2 seconds | `flexbox` |
-| **4** | **Tutorial Hell Wasteland** | Rapidly hammer movement inputs like an ape copying code | `copy` |
-| **5** | **Impostor Syndrome Labyrinth** | Vigorously shake your mouse back and forth in panic | `bluff` |
-| **6** | **Protocol 67 Matrix Anomaly** | Spin your mouse wheel continuously to crack the buffer | `glitch` |
-| **7** | **Burnout & Palpitations** | Execute choreographed rebound wall sequences | `caffeine` |
-| **8** | **Antechamber of Revelation** | Walk into and register all 4 chamber corners | `reveal` |
-| **9** | **The Summit Vault of Truth** | All plaques open; inspect the South Wall memorandum | *(Summit)* |
+| **0** | **Ground Zero: Procrastination** | Repeatedly ram into walls until structural integrity cracks |
+| **1** | **Corporate Sycophant Suite** | Hold <kbd>Q</kbd> or <kbd>E</kbd> to complete a 360° executive swivel
+| **2** | **Overleaf & Academic Hell** | Stop all input and freeze in dead silence for 3.5 seconds
+| **3** | **CSS Centering Purgatory** | Stand dead in the exact center ($X \approx 0, Z \approx 0$) for 2 seconds
+| **4** | **Tutorial Hell Wasteland** | Rapidly hammer movement inputs like an ape copying code
+| **5** | **Impostor Syndrome Labyrinth** | Vigorously shake your mouse back and forth in panic
+| **6** | **Protocol 67 Matrix Anomaly** | Spin your mouse wheel continuously to crack the buffer
+| **7** | **Burnout & Palpitations** | Execute choreographed rebound wall sequences
+| **8** | **Antechamber of Revelation** | Walk into and register all 4 chamber corners
+| **9** | **The Summit Vault of Truth** | All plaques open; inspect the South Wall memorandum
 
 ---
 

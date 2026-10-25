@@ -1,0 +1,2446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery 404: The 10-Floor Tower of Judgment</title>
+  <style>
+    /* ==========================================================================
+       1. CORE THEME & CYBER-BRUTALIST TOKENS (NO PINK, NO SCANLINES)
+       ========================================================================== */
+    :root {
+      --bg: #030306;
+      --font-mono: ui-monospace, Menlo, Consolas, "Courier New", monospace;
+      --room-size: 860px;
+      --half-size: 430px;
+      --wall-height: 520px;
+      --half-height: 260px;
+
+      /* Palette Tokens */
+      --toxic-yellow: #ffee00;
+      --gaslight-blue: #00e5ff;
+      --matrix-green: #00ff66;
+      --gold-cringe: #ffd700;
+      --hazard-red: #ff2200;
+      --wall-border: #141923;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: #e2e8f0;
+      font-family: var(--font-mono);
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      place-items: center;
+      perspective: 900px;
+      transition: filter 0.5s ease-out;
+    }
+
+    .shake {
+      animation: cameraBonk 0.22s ease-out;
+    }
+
+    @keyframes cameraBonk {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(0.97) rotate(0.8deg); }
+      100% { transform: scale(1); }
+    }
+
+    body.spasm-mode {
+      filter: invert(1) hue-rotate(180deg);
+      animation: screenSpasm 0.3s 3;
+    }
+
+    @keyframes screenSpasm {
+      0%, 100% { transform: translate(0, 0); }
+      30% { transform: translate(-12px, 10px); }
+      70% { transform: translate(12px, -10px); }
+    }
+
+    /* ==========================================================================
+       2. SAVAGE HUD & TELEMETRY
+       ========================================================================== */
+    .hud {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 26px;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .hud-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .title-box {
+      background: rgba(5, 5, 8, 0.96);
+      border: 3px solid var(--toxic-yellow);
+      padding: 16px 26px;
+      box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.95);
+    }
+
+    .title-box h1 {
+      font-size: 15.5px;
+      font-weight: 900;
+      color: var(--toxic-yellow);
+      letter-spacing: 0.12em;
+    }
+
+    .title-box p {
+      color: var(--gaslight-blue);
+      margin-top: 4px;
+      font-size: 11px;
+    }
+
+    .telemetry {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 7px 22px;
+      background: rgba(5, 5, 8, 0.96);
+      border: 2px solid var(--wall-border);
+      padding: 16px 24px;
+      box-shadow: -5px 5px 0 rgba(0, 229, 255, 0.25);
+      font-size: 12.5px;
+    }
+
+    .metric-val {
+      font-weight: bold;
+      color: var(--toxic-yellow);
+      text-align: right;
+    }
+
+    .floor-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      background: var(--toxic-yellow);
+      color: #000;
+      font-weight: 900;
+      font-size: 11px;
+    }
+
+    .reticle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px;
+      height: 12px;
+      border: 1px solid var(--gaslight-blue);
+      border-radius: 50%;
+    }
+    .reticle::after {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: 2px;
+      height: 2px;
+      background: var(--toxic-yellow);
+    }
+
+    .roast-banner {
+      position: absolute;
+      top: 105px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #080b12;
+      color: var(--toxic-yellow);
+      font-weight: 900;
+      padding: 12px 26px;
+      font-size: 12.5px;
+      letter-spacing: 0.1em;
+      border: 2px solid var(--toxic-yellow);
+      box-shadow: 0 0 30px rgba(255, 238, 0, 0.4);
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      pointer-events: none;
+      text-align: center;
+      max-width: 85%;
+    }
+
+    .roast-banner.active {
+      opacity: 1;
+      transform: translateX(-50%) translateY(10px);
+    }
+
+    .clue-broadcast {
+      position: absolute;
+      top: 165px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #021a0c;
+      color: var(--matrix-green);
+      border: 2px solid var(--matrix-green);
+      box-shadow: 0 0 35px rgba(0, 255, 102, 0.4);
+      padding: 14px 28px;
+      font-size: 12.5px;
+      font-weight: bold;
+      letter-spacing: 0.08em;
+      text-align: center;
+      max-width: 80%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .clue-broadcast.active {
+      opacity: 1;
+    }
+
+    /* ==========================================================================
+       ROAMING EVASIVE CURATOR BUTTON
+       ========================================================================== */
+    .beg-btn {
+      position: fixed;
+      top: 110px;
+      right: 26px;
+      background: #0e121d;
+      color: var(--toxic-yellow);
+      border: 2px dashed var(--toxic-yellow);
+      padding: 11px 18px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(255, 238, 0, 0.25);
+      z-index: 60;
+      pointer-events: auto;
+      transition: left 0.24s cubic-bezier(0.18, 0.89, 0.32, 1.28),
+                  top 0.24s cubic-bezier(0.18, 0.89, 0.32, 1.28),
+                  transform 0.15s ease, background 0.2s, border-color 0.2s;
+    }
+
+    .beg-btn.stealth {
+      border: 2px solid var(--matrix-green);
+      color: #000;
+      background: var(--matrix-green);
+      box-shadow: 0 0 35px rgba(0, 255, 102, 0.6);
+      transform: scale(1.05);
+    }
+
+    .hud-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .floor-keypad-panel {
+      pointer-events: auto;
+      background: rgba(5, 5, 8, 0.96);
+      border: 2px solid #334155;
+      padding: 16px 20px;
+      box-shadow: 5px -5px 0 rgba(0, 0, 0, 0.9);
+      max-width: 440px;
+    }
+
+    .keypad-header {
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--toxic-yellow);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .drawer-btn {
+      background: #1e293b;
+      color: var(--gaslight-blue);
+      border: 1px solid var(--gaslight-blue);
+      font-family: inherit;
+      font-size: 10px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.2s, color 0.2s;
+    }
+    .drawer-btn:hover {
+      background: var(--gaslight-blue);
+      color: #000;
+    }
+
+    .floor-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+
+    .floor-key {
+      background: #11141c;
+      color: #64748b;
+      border: 1px solid #1e293b;
+      padding: 9px 6px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .floor-key.unlocked {
+      color: #f1f5f9;
+      border-color: #475569;
+    }
+
+    .floor-key.active {
+      background: var(--toxic-yellow) !important;
+      color: #000 !important;
+      border-color: var(--toxic-yellow) !important;
+      font-weight: 900;
+      box-shadow: 0 0 12px rgba(255, 238, 0, 0.5);
+    }
+
+    .floor-key.denied {
+      animation: keyDenied 0.35s ease;
+      background: var(--hazard-red) !important;
+      color: #fff !important;
+      border-color: #fff !important;
+    }
+
+    @keyframes keyDenied {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .controls-hint {
+      background: rgba(5, 5, 8, 0.95);
+      border: 1px solid var(--wall-border);
+      padding: 14px 20px;
+      color: #94a3b8;
+      line-height: 1.6;
+      font-size: 11px;
+    }
+
+    .controls-hint kbd {
+      background: #1e293b;
+      color: var(--toxic-yellow);
+      padding: 3px 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-weight: bold;
+    }
+
+    /* ==========================================================================
+       POPUPS & MODALS (HOW-TO-PLAY, HINTS, SUMMIT VAULT)
+       ========================================================================== */
+    .how-to-play-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 4, 8, 0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 350;
+      display: none;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .how-to-play-modal.open {
+      display: grid;
+    }
+
+    .how-to-play-box {
+      max-width: 680px;
+      width: 100%;
+      background: #080b12;
+      border: 3px solid var(--toxic-yellow);
+      box-shadow: 0 0 60px rgba(255, 238, 0, 0.35), 0 0 90px rgba(0, 0, 0, 0.95);
+      padding: 26px 30px;
+      font-family: var(--font-mono);
+      animation: modalPop 0.28s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      position: relative;
+    }
+
+    .how-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--toxic-yellow);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .how-header h2 {
+      font-size: 15.5px;
+      font-weight: 900;
+      color: var(--toxic-yellow);
+      letter-spacing: 0.1em;
+    }
+
+    .how-content {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #cbd5e1;
+      max-height: 60vh;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .how-step {
+      background: #0d121d;
+      border: 1px solid #1e293b;
+      padding: 12px 16px;
+    }
+
+    .how-step h3 {
+      font-size: 12.5px;
+      color: var(--gaslight-blue);
+      font-weight: 900;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .how-step kbd {
+      background: #1e293b;
+      color: var(--toxic-yellow);
+      padding: 2px 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-weight: bold;
+    }
+
+    .how-footer {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px dashed rgba(255, 255, 255, 0.15);
+      padding-top: 14px;
+    }
+
+    .start-game-btn {
+      background: var(--toxic-yellow);
+      color: #000;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 10px 24px;
+      border: 2px solid #000;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 238, 0, 0.4);
+      letter-spacing: 0.05em;
+      transition: transform 0.15s, background 0.15s;
+    }
+    .start-game-btn:hover {
+      background: #fff;
+      transform: scale(1.03);
+    }
+
+    .transition-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: #080a10;
+      border: 3px solid var(--toxic-yellow);
+      padding: 26px 40px;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(255, 238, 0, 0.4);
+      z-index: 150;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease-out;
+      max-width: 600px;
+    }
+
+    .transition-popup.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .transition-popup h2 {
+      font-size: 19px;
+      color: var(--toxic-yellow);
+      margin-bottom: 8px;
+      font-weight: 900;
+    }
+
+    .transition-popup p {
+      font-size: 12px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .flash-67-popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 0, 0, 0.98);
+      display: none;
+      place-items: center;
+      z-index: 300;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .flash-67-content {
+      border: 6px solid #fff;
+      padding: 30px;
+      background: #000;
+      max-width: 600px;
+      box-shadow: 0 0 60px #fff;
+    }
+
+    .flash-67-content h1 {
+      font-size: 72px;
+      color: var(--toxic-yellow);
+      line-height: 1;
+      margin-bottom: 12px;
+      font-weight: 900;
+    }
+
+    .flash-67-content p {
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--gaslight-blue);
+    }
+
+    .terminal-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 3, 6, 0.96);
+      z-index: 250;
+      display: none;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .terminal-modal.open {
+      display: grid;
+    }
+
+    .terminal-box {
+      max-width: 780px;
+      width: 100%;
+      background: #050b07;
+      border: 3px solid var(--matrix-green);
+      box-shadow: 0 0 65px rgba(0, 255, 102, 0.4);
+      padding: 30px;
+      font-family: var(--font-mono);
+    }
+
+    .terminal-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0, 255, 102, 0.3);
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      color: var(--matrix-green);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .terminal-body {
+      color: #a7f3d0;
+      font-size: 12px;
+      line-height: 1.8;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+
+    .rickroll-btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 12px 22px;
+      background: var(--toxic-yellow);
+      color: #000;
+      font-weight: 900;
+      text-decoration: none;
+      border: 2px solid #000;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 238, 0, 0.6);
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      transition: transform 0.15s, background 0.15s;
+    }
+    .rickroll-btn:hover {
+      background: #fff;
+      transform: scale(1.03);
+    }
+
+    .terminal-close {
+      background: var(--matrix-green);
+      color: #000;
+      border: none;
+      padding: 9px 20px;
+      font-family: inherit;
+      font-weight: 900;
+      font-size: 11.5px;
+      cursor: pointer;
+      margin-top: 16px;
+      float: right;
+    }
+
+    .annoying-hint-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 620px;
+      background: #090c14;
+      border: 3px solid var(--hazard-red);
+      box-shadow: 0 0 55px rgba(255, 34, 0, 0.6);
+      z-index: 230;
+      display: none;
+      padding: 24px;
+      font-family: var(--font-mono);
+      text-align: center;
+    }
+
+    .annoying-hint-modal.open {
+      display: block;
+      animation: modalPop 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+
+    @keyframes modalPop {
+      0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    .annoying-hint-header {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--hazard-red);
+      border-bottom: 1px dashed rgba(255, 34, 0, 0.3);
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+      letter-spacing: 0.1em;
+    }
+
+    .annoying-hint-body {
+      font-size: 13px;
+      line-height: 1.7;
+      color: #e2e8f0;
+      margin-bottom: 20px;
+    }
+
+    .clue-drawer-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 700px;
+      background: #080a12;
+      border: 2px solid var(--toxic-yellow);
+      box-shadow: 0 0 55px rgba(0, 0, 0, 0.95);
+      z-index: 220;
+      display: none;
+      padding: 24px;
+      font-family: var(--font-mono);
+    }
+
+    .clue-drawer-modal.open {
+      display: block;
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--toxic-yellow);
+    }
+
+    .drawer-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 55vh;
+      overflow-y: auto;
+    }
+
+    .drawer-item {
+      background: #0f131f;
+      border: 1px solid #1e293b;
+      padding: 12px 16px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .drawer-item.unlocked {
+      border-color: var(--matrix-green);
+      background: #04140b;
+    }
+
+    /* ==========================================================================
+       3. 3D SPATIAL ARCHITECTURE
+       ========================================================================== */
+    .viewport {
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      place-items: center;
+      perspective: 900px;
+      perspective-origin: 50% 50%;
+      overflow: hidden;
+    }
+
+    .camera {
+      width: 0;
+      height: 0;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .world {
+      transform-style: preserve-3d;
+      position: absolute;
+      top: 0;
+      left: 0;
+      will-change: transform;
+    }
+
+    .chamber {
+      position: absolute;
+      width: var(--room-size);
+      height: var(--room-size);
+      transform-style: preserve-3d;
+      top: calc(-1 * var(--half-size));
+      left: calc(-1 * var(--half-size));
+    }
+
+    .plane {
+      position: absolute;
+      box-sizing: border-box;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+
+    .p-floor {
+      width: var(--room-size);
+      height: var(--room-size);
+      top: 0;
+      left: 0;
+      transform: translateY(var(--half-height)) rotateX(90deg);
+    }
+
+    .p-ceiling {
+      width: var(--room-size);
+      height: var(--room-size);
+      top: 0;
+      left: 0;
+      transform: translateY(calc(-1 * var(--half-height))) rotateX(-90deg);
+    }
+
+    .w-north, .w-south, .w-east, .w-west {
+      width: var(--room-size);
+      height: var(--wall-height);
+      top: calc(var(--half-size) - var(--half-height));
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .w-north { transform: translate3d(0, 0, calc(-1 * var(--half-size))) rotateY(0deg); }
+    .w-south { transform: translate3d(0, 0, var(--half-size)) rotateY(180deg); }
+    .w-east  { transform: translate3d(var(--half-size), 0, 0) rotateY(-90deg); }
+    .w-west  { transform: translate3d(calc(-1 * var(--half-size)), 0, 0) rotateY(90deg); }
+
+    .wall-plaque {
+      width: 760px;
+      min-height: 350px;
+      background: rgba(6, 8, 14, 0.97);
+      border: 4px solid var(--toxic-yellow);
+      padding: 32px 36px;
+      box-shadow: 0 0 55px rgba(255, 238, 0, 0.5), inset 0 0 25px rgba(0, 0, 0, 0.8);
+      position: relative;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      animation: plaqueSpawn 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+
+    .wall-plaque.cracked {
+      display: flex;
+    }
+
+    @keyframes plaqueSpawn {
+      0%   { opacity: 0; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .plaque-header {
+      font-size: 13.5px;
+      font-weight: 900;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .plaque-body {
+      color: #fff;
+      font-size: 15.5px;
+      line-height: 1.75;
+      text-shadow: 0 0 12px rgba(0, 255, 102, 0.45);
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .status-tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 3px;
+      background: var(--toxic-yellow);
+      color: #000;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+    }
+
+    .plaque-footer {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.15);
+      font-size: 10.5px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SAVAGE HUD -->
+  <div class="hud">
+    <div class="hud-header">
+      <div class="title-box">
+        <h1>THE TOWER OF JUSTICE</h1>
+        <p>10-Tier Proving Grounds // JUSTICE MAKERS</p>
+      </div>
+
+      <div class="telemetry">
+        <span>Current Floor:</span>
+        <span class="metric-val"><span class="floor-badge" id="metric-floor">FL 0: GROUND ZERO</span></span>
+
+        <span>Coordinates:</span>
+        <span class="metric-val" id="metric-coords">X: 0 | Z: -180</span>
+
+        <span>Bearing:</span>
+        <span class="metric-val" id="metric-bearing">0° [N]</span>
+
+        <span>Walls Decoded:</span>
+        <span class="metric-val" id="metric-clues">0 / 4 WALLS</span>
+
+        <span>Dignity Balance:</span>
+        <span class="metric-val" id="metric-dignity">100%</span>
+
+        <span>Secret Input:</span>
+        <span class="metric-val" id="metric-buffer" style="color: var(--gaslight-blue);">[LISTENING...]</span>
+      </div>
+    </div>
+
+    <!-- Annoying Curator Intercom Beg Button (Roams on approach) -->
+    <button class="beg-btn" id="beg-btn" onclick="openAnnoyingHint()">
+      🆘 BEG CURATOR FOR HINT
+    </button>
+
+    <!-- Toast Notification -->
+    <div class="roast-banner" id="roast-banner">SYSTEM INITIALIZED. WALLS ARE DORMANT. PERSUADE THE CURATOR.</div>
+
+    <!-- HUD Decrypted Clue Broadcast Bar -->
+    <div class="clue-broadcast" id="clue-broadcast">
+      [NEW CLUE FRAGMENT DECRYPTED]
+    </div>
+
+    <div class="reticle"></div>
+
+    <div class="hud-footer">
+      <div class="floor-keypad-panel">
+        <div class="keypad-header">
+          <span>VERTICAL ACCESS DECK</span>
+          <div style="display: flex; gap: 6px;">
+            <button class="drawer-btn" onclick="openHowToPlay()">HOW TO PLAY</button>
+            <button class="drawer-btn" id="drawer-toggle-btn" onclick="toggleClueDrawer()">CLUE LOG</button>
+          </div>
+        </div>
+        <div class="floor-grid" id="floor-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="controls-hint">
+        <p><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> : Walk | <kbd>Q</kbd> / <kbd>E</kbd> : Smooth 3D Rotate (Hold) | <kbd>Mouse</kbd> : Look</p>
+        <p style="color: var(--toxic-yellow); margin-top: 4px;">
+          *Passphrases are typed directly anywhere.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW TO PLAY MODAL (POPS UP ON LOAD) -->
+  <div class="how-to-play-modal" id="how-to-play-modal" onclick="if(event.target === this) closeHowToPlay()">
+    <div class="how-to-play-box">
+      <div class="how-header">
+        <h2>MISSION DOSSIER // HOW TO SURVIVE THE TOWER</h2>
+        <span class="status-tag">INITIALIZING</span>
+      </div>
+
+      <div class="how-content">
+        <div class="how-step">
+          <h3>🎮 1. BASIC NAVIGATION & CAMERA</h3>
+          <p>
+            • <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> or <kbd>Arrow Keys</kbd>: Walk.<br>
+            • <kbd>Q</kbd> / <kbd>E</kbd>: Camera 90° left or right.<br>
+            • <kbd>Mouse</kbd>: Look around chamber angles freely.<br>
+            • <kbd>Mouse Wheel</kbd>: Rapid forward / reverse translation.
+          </p>
+        </div>
+
+        <div class="how-step">
+          <h3>🆘 2. Message from the Curator</h3>
+          <p>
+            You must kneel down.<br>
+            <span style="color: var(--toxic-yellow);">*WARNING:</span> Don't be aggressive.
+          </p>
+        </div>
+
+        <div class="how-step">
+          <h3>🧩 3. DECRYPING THE 4 WALL RIDDLES</h3>
+          <p>
+            Each room has 4 walls (North, South, East, West). Every floor demands a distinct physical or behavioral trial:
+            <br>
+          </p>
+        </div>
+
+        <div class="how-step">
+          <h3>🔑 4. TYPING THE ASCENSION PASSPHRASE</h3>
+          <p>
+            Combine the decrypted fragments to deduce the floor's keyword. Simply <strong>type the word anywhere on your keyboard</strong> (tracked live in the HUD's <em>Secret Input</em>). Correct passphrases ascend you to the next level.<br>
+            <span style="color: var(--hazard-red);">*BEWARE:</span> Serious spelling errors trigger a timeline corruption reset!
+          </p>
+        </div>
+      </div>
+
+      <div class="how-footer">
+        <span style="font-size: 11px; color: #64748b;">[PRESS ESC OR ENTER TO PROCEED]</span>
+        <button class="start-game-btn" onclick="closeHowToPlay()">ENTER TOWER & START [ENTER]</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANNOYING CURATOR HINT MODAL -->
+  <div class="annoying-hint-modal" id="annoying-hint-modal">
+    <div class="annoying-hint-header">
+      ⚠️ CONDESCENDING CURATOR HELPLINE // TRANSCRIPT
+    </div>
+    <div class="annoying-hint-body" id="annoying-hint-body"></div>
+    <button class="drawer-btn" style="background: var(--hazard-red); color: #fff; border-color: #fff; font-size: 11px; padding: 8px 16px;" onclick="closeAnnoyingHint()">
+      DISMISS SCORN & SUFFER ALONE [ESC]
+    </button>
+  </div>
+
+  <!-- CLUE LOG DRAWER MODAL -->
+  <div class="clue-drawer-modal" id="clue-drawer-modal">
+    <div class="drawer-header">
+      <span id="drawer-title">DECRYPTED MEMORY ARCHIVE // FLOOR 0</span>
+      <button class="drawer-btn" onclick="toggleClueDrawer()">CLOSE [ESC]</button>
+    </div>
+    <div class="drawer-list" id="drawer-list"></div>
+  </div>
+
+  <!-- TRANSITION POPUP -->
+  <div class="transition-popup" id="transition-popup">
+    <h2 id="trans-title">ASCENDING</h2>
+    <p id="trans-desc">Transferring coordinates...</p>
+  </div>
+
+  <!-- SPECIAL RAGEBAIT 67 FLASH POPUP (~210ms blink) -->
+  <div class="flash-67-popup" id="flash-67-popup">
+    <div class="flash-67-content">
+      <h1>67</h1>
+      <p><strong>[SYSTEM ANOMALY CLASSIFIED // SECTOR 67]</strong></p>
+      <p>THE ARCHITECTS OVERWROTE THIS EXPERIMENT TIMELINE. SUBJECT WAS NEVER SUPPOSED TO OBSERVE THIS LEVEL COGNITION DRIFT DETECTED AT PATNA SUB-GRID 67.094...</p>
+    </div>
+  </div>
+
+  <!-- TOP-FLOOR SUMMIT VAULT TERMINAL -->
+  <div class="terminal-modal" id="terminal-modal">
+    <div class="terminal-box">
+      <div class="terminal-header">
+        <span>TOP-FLOOR SUMMIT VAULT // FINAL EXECUTIVE MEMORANDUM</span>
+        <span style="color: var(--toxic-yellow);">[PASS: 'reveal' VERIFIED]</span>
+      </div>
+      <div class="terminal-body" id="modal-letter-content"></div>
+      <button class="terminal-close" onclick="closeTerminal()">DISMISS DOSSIER [ESC]</button>
+    </div>
+  </div>
+
+  <!-- 3D WORLD -->
+  <div class="viewport" id="viewport">
+    <div class="camera" id="camera">
+      <div class="world" id="world"></div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       4. JAVASCRIPT: CHAOTIC PER-FLOOR DECRYPT MODES & MUTATED TIMELINES
+       ========================================================================== -->
+  <script>
+    const SAVAGE_CLEAR_ROASTS = [
+      "Floor cleared. Do not flatter yourself; an infant with an iPad could have solved that.",
+      "Level passed. Your parents are still disappointed, but at least the computer is mildly impressed.",
+      "Ascending. Enjoy the brief dopamine hit before reality crushes your confidence again.",
+      "Floor unlocked. It only took you 400 unnecessary keystrokes and severe cognitive strain.",
+      "Cleared. Your GPA did not increase, but your tolerance for misery certainly did.",
+      "Promoted to the next tier of humiliation. Proceed with minimal dignity.",
+      "Success registered. Even a broken clock is right twice a day; congratulations on being one of those times.",
+      "Floor solved. Try not to brag about finishing a basic browser puzzle.",
+      "Ascension granted. Somewhere, a compiler is preparing to reject your next project."
+    ];
+
+    let FLOORS_DATA = [
+      {
+        id: 0,
+        name: "GROUND ZERO: PROCRASTINATION",
+        passphrase: null,
+        nextPassphrase: "focus",
+        crypticHint: "You possess a remarkably dense skull; have you attempted using it as an offensive battering ram against physical architecture? Keep headbutting the concrete like a feral creature until structural integrity submits.",
+        bgColor: "linear-gradient(to top, #0b0c10, #141720)",
+        borderColor: "#1f2833",
+        accent: "var(--toxic-yellow)",
+        clues: {
+          north: "I am what vanishes the instant your screen lights up with a social media notification.",
+          south: "Cameras and lenses require me to turn blurry light into clarity.",
+          east: "Five letters. Centers of earthquakes and attention share my identical name.",
+          west: "Memory Fragment: F _ _ _ S. Stop scrolling reels and direct your mind."
+        }
+      },
+      {
+        id: 1,
+        name: "FL 1: CORPORATE SYCOPHANT SUITE",
+        passphrase: "focus",
+        nextPassphrase: "synergy",
+        crypticHint: "Standing frozen like a terrified mannequin is getting you nowhere. Channel the spirit of an overcompensated CEO spinning aimlessly in an executive swivel chair. Hold Q or E and rotate yourself into dizziness.",
+        bgColor: "linear-gradient(to top, #071326, #0e274d)",
+        borderColor: "#0a66c2",
+        accent: "#00e5ff",
+        clues: {
+          north: "Executives chant me to explain why 1 + 1 equals 3 in board presentations.",
+          south: "Greek prefix 'syn' (together) meets 'ergon' (work).",
+          east: "Seven letters. Rhymes with energy, delivers zero tangible code.",
+          west: "Memory Fragment: S _ _ _ _ G Y. Used in emails right before team restructuring."
+        }
+      },
+      {
+        id: 2,
+        name: "FL 2: OVERLEAF & ACADEMIC HELL",
+        passphrase: "synergy",
+        nextPassphrase: "panic",
+        crypticHint: "Your frantic, nervous twitching is offensive to this simulation. Freeze. Play dead. Pretend your code just caused a production outage and you're holding your breath so the lead architect doesn't spot you.",
+        bgColor: "linear-gradient(to top, #1c0505, #330b0b)",
+        borderColor: "#ff2200",
+        accent: "var(--hazard-red)",
+        clues: {
+          north: "It is 11:58 PM. The portal closes at 11:59 PM. LaTeX throws an unidentifiable fatal crash.",
+          south: "Named after the Greek god whose unexpected shout made entire armies flee in terror.",
+          east: "Five letters. Resting heart rate spikes to 160 BPM while looking at a blank page.",
+          west: "Memory Fragment: P _ _ _ C. What takes over when 'git push --force' ruins production."
+        }
+      },
+      {
+        id: 3,
+        name: "FL 3: CSS CENTERING PURGATORY",
+        passphrase: "panic",
+        nextPassphrase: "flexbox",
+        crypticHint: "You're skulking along the perimeters like an awkward outcast at a networking mixer. Walk dead into the crosshairs of the room and stand in the exact bullseye until the universe finishes evaluating your mediocrity.",
+        bgColor: "linear-gradient(to top, #0f0a21, #1e1342)",
+        borderColor: "#4a3b7c",
+        accent: "#ffee00",
+        clues: {
+          north: "The prayer repeated by every web developer: 'justify-content: center; align-items: center;'",
+          south: "Invented so people would stop using table hacks and clearing floats in CSS.",
+          east: "Seven letters. A compound word combining agility with a square container.",
+          west: "Memory Fragment: F L _ _ _ _ X. The 1D layout model saving you from despair."
+        }
+      },
+      {
+        id: 4,
+        name: "FL 4: TUTORIAL HELL WASTELAND",
+        passphrase: "flexbox",
+        nextPassphrase: "copy",
+        crypticHint: "Do what you do best when pretending to be a software developer: frantically hammer your directional inputs with manic, thoughtless repetition like an ape attempting to duplicate someone else's GitHub repo in under a second.",
+        bgColor: "linear-gradient(to top, #1a1003, #382103)",
+        borderColor: "#f59e0b",
+        accent: "var(--gold-cringe)",
+        clues: {
+          north: "The sacred keystroke combination: Control plus C.",
+          south: "Four letters. Without me, Stack Overflow would lose 99.8% of its internet utility.",
+          east: "Paired for eternity with 'Paste'.",
+          west: "Memory Fragment: C _ _ Y. What you did with someone else's code to get here."
+        }
+      },
+      {
+        id: 5,
+        name: "FL 5: IMPOSTOR SYNDROME LABYRINTH",
+        passphrase: "copy",
+        nextPassphrase: "bluff",
+        crypticHint: "Your mouse is far too steady for someone actively experiencing severe imposter syndrome. Vigorously shake your cursor across the glass like an electrical short while you pray nobody asks you a technical question.",
+        bgColor: "linear-gradient(to top, #041417, #072a30)",
+        borderColor: "#06b6d4",
+        accent: "#00ff66",
+        clues: {
+          north: "What junior developers and poker players do when holding zero winning cards.",
+          south: "Saying 'I'm refactoring the internal pipeline' when you spent 5 hours on Reddit.",
+          east: "Five letters. Sounds like a steep cliff, acts like a confident deception.",
+          west: "Memory Fragment: B _ _ _ F. Fake competence until the sprint ends."
+        }
+      },
+      {
+        id: 6,
+        name: "FL 6: PROTOCOL 67 MATRIX ANOMALY",
+        passphrase: "bluff",
+        nextPassphrase: "glitch",
+        crypticHint: "Spin that tiny ribbed mouse wheel like a rodent trying to generate hydroelectric power. Scroll furiously into the void until your finger cramps or the simulation cracks.",
+        bgColor: "linear-gradient(to top, #0e121a, #1a2233)",
+        borderColor: "#3b82f6",
+        accent: "#00ffcc",
+        clues: {
+          north: "A torn polygon, a missing frame, a temporary bit-flip in the simulation.",
+          south: "When ascending from this floor, beware: Sector 67 flashes in the blink of an eye.",
+          east: "Six letters. An unexpected malfunction in an otherwise predictable system.",
+          west: "Memory Fragment: G L _ _ _ H. The word describing reality breaking apart."
+        }
+      },
+      {
+        id: 7,
+        name: "FL 7: BURNOUT & PALPITATIONS",
+        passphrase: "glitch",
+        nextPassphrase: "caffeine",
+        crypticHint: "Mindless ramming won't work on Floor 7. This level demands choreography. Different clues require distinct spatial patterns: try rebounding between opposing walls, or carving an arc through adjacent sectors. Dance, don't flail.",
+        bgColor: "linear-gradient(to top, #1f0b00, #3d1600)",
+        borderColor: "#ea580c",
+        accent: "#ffee00",
+        clues: {
+          north: "Chemical formula: C8 H10 N4 O2.",
+          south: "The legal bitter stimulant substituting for blood in undergraduate engineers.",
+          east: "Eight letters. Extracted from roasted beans and condensed into cold energy drinks.",
+          west: "Memory Fragment: C _ _ _ E I N E. The fuel powering this midnight project."
+        }
+      },
+      {
+        id: 8,
+        name: "FL 8: ANTECHAMBER OF REVELATION",
+        passphrase: "caffeine",
+        nextPassphrase: "reveal",
+        crypticHint: "Hiding in corners is your natural instinct when confrontation looms, isn't it? Good. Go touch every single corner vertex of this chamber like a child banished to time-out.",
+        bgColor: "linear-gradient(to top, #020b17, #061c38)",
+        borderColor: "#38bdf8",
+        accent: "var(--gaslight-blue)",
+        clues: {
+          north: "The curtain must be pulled back; what was concealed must now be shown.",
+          south: "Six letters. Direct antonym of 'conceal', synonym of 'unveil'.",
+          east: "The ancient command that strips redacted layers and unlocks Floor 9.",
+          west: "Memory Fragment: R E _ _ _ L. Type it into the void to open the top vault."
+        }
+      },
+      {
+        id: 9,
+        name: "FL 9: THE SUMMIT VAULT OF TRUTH",
+        passphrase: "reveal",
+        nextPassphrase: null,
+        crypticHint: "You are literally at the summit. Everything has already been decrypted and laid bare. Stop begging for hints, turn around, and face your performance evaluation on the South Wall.",
+        bgColor: "linear-gradient(to top, #021a0c, #053b1b)",
+        borderColor: "#00ff66",
+        accent: "#ffee00",
+        clues: {
+          north: "SUMMIT VAULT BREACHED: All 10 levels solved sequentially.",
+          south: "Review the executive memorandum below and claim the final surprise.",
+          east: "No further passphrases exist. You reached the apex.",
+          west: "Truth deciphered: Everyone is winging it."
+        }
+      }
+    ];
+
+    const MUTATED_DATA_0_TO_6 = [
+      {
+        id: 0,
+        name: "GROUND ZERO: REVERSE TRACTION",
+        passphrase: null,
+        nextPassphrase: "clarity",
+        crypticHint: "Moving forward clearly ruined your life. Try walking completely backward into the walls like someone frantically backtracking on their reckless life choices.",
+        clues: {
+          north: "The opposite of mental fog; seeing through the distortion of timeline resets.",
+          south: "Seven letters. What water and clean thought possess when unfiltered.",
+          east: "A state of pure lucidity where you finally spell chemical compounds properly.",
+          west: "Mutated Fragment: C L _ _ _ T Y. Unlock Floor 1 with lucid vision."
+        }
+      },
+      {
+        id: 1,
+        name: "FL 1: STRAFE OSCILLATION CHAMBER",
+        passphrase: "clarity",
+        nextPassphrase: "leverage",
+        crypticHint: "Chronic indecision defines you. Rapidly alternate strafing left and right like a politician dodging direct accountability during an interview.",
+        clues: {
+          north: "What financial firms use to multiply gains or amplify catastrophic defaults.",
+          south: "Archimedes promised to move the entire earth if given a long enough fulcrum and this.",
+          east: "Eight letters. Strategic advantage extracted from another party's weakness.",
+          west: "Mutated Fragment: L E _ _ _ _ G E. The ultimate tool of corporate negotiations."
+        }
+      },
+      {
+        id: 2,
+        name: "FL 2: TREMOR SHAKE WASTELAND",
+        passphrase: "leverage",
+        nextPassphrase: "despair",
+        crypticHint: "Show me authentic physical panic. Tap your directional keys with trembling velocity in a burst of sheer despair.",
+        clues: {
+          north: "When the compiler crashes, the deadline passed 10 minutes ago, and no backup exists.",
+          south: "Seven letters. The deepest emotional trench of academic failure.",
+          east: "Abandon all hope, ye who enter this unformatted document.",
+          west: "Mutated Fragment: D E _ _ _ _ R. The emotion that caused your spelling blunder."
+        }
+      },
+      {
+        id: 3,
+        name: "FL 3: THE TWO-DIMENSIONAL MATRIX",
+        passphrase: "despair",
+        nextPassphrase: "grid",
+        crypticHint: "You failed to stay grounded in the center. Go slide into the farthest peripheral corners of this broken grid layout.",
+        clues: {
+          north: "When 1D Flexbox isn't enough to contain your CSS layout catastrophe.",
+          south: "Four letters. Rows intersecting columns across an organized coordinate plane.",
+          east: "The modern CSS layout specification powered by 'display: grid'.",
+          west: "Mutated Fragment: G _ _ D. The structure that holds shattered designs."
+        }
+      },
+      {
+        id: 4,
+        name: "FL 4: THE CLIPBOARD GRAVEYARD",
+        passphrase: "grid",
+        nextPassphrase: "paste",
+        crypticHint: "Spam your pointer clicks anywhere on the glass like an elderly relative trying to force an unresponsive browser window to load.",
+        clues: {
+          north: "The inseparable twin of Control+C; the sacred Control+V.",
+          south: "Five letters. Sticky substance or keystroke action inserting borrowed genius.",
+          east: "Taking someone else's code from the clipboard and dropping it into your repo.",
+          west: "Mutated Fragment: P _ _ T E. The second half of your developer career."
+        }
+      },
+      {
+        id: 5,
+        name: "FL 5: THE GRAND THEATRICAL MASQUERADE",
+        passphrase: "paste",
+        nextPassphrase: "pretend",
+        crypticHint: "Look left, look right, look left, look right. Alternate your camera angles like an overwhelmed referee watching a tennis match of your own incompetence.",
+        clues: {
+          north: "Acting as though you understand the distributed systems diagram on the whiteboard.",
+          south: "Seven letters. Make-believe simulation executed by every nervous junior engineer.",
+          east: "Saying 'Let's take this offline' when you have no idea what is being discussed.",
+          west: "Mutated Fragment: P R _ _ _ _ D. Fake mastery until the sprint concludes."
+        }
+      },
+      {
+        id: 6,
+        name: "FL 6: CORRUPTED KERNEL RESTORATION",
+        passphrase: "pretend",
+        nextPassphrase: "reboot",
+        crypticHint: "Complete the ancient diagnostic reboot pilgrimage: touch North, journey to East, and terminate at South.",
+        clues: {
+          north: "The first solution suggested by IT support for the past 40 years.",
+          south: "Six letters. Power down and restart to clear volatile memory caches.",
+          east: "A fresh restart of a system that lost its mind after a spelling disaster.",
+          west: "Mutated Fragment: R E _ _ _ T. Turn the simulation off and on again."
+        }
+      }
+    ];
+
+    function getExecutiveLetterHTML() {
+      return `
+        <div style="font-size: 14px; font-weight: 900; color: var(--toxic-yellow); margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 6px;">
+          EXECUTIVE MEMORANDUM // DEPT OF COGNITIVE DISCIPLINE
+        </div>
+        <p style="margin-bottom: 12px; font-size: 13px; color: #cbd5e1;">
+          Against all architectural logic, non-Euclidean frustration, and spelling hazards, you conquered all 10 tiers of the Tower. Here is your final performance evaluation:
+        </p>
+        <ul style="margin-left: 18px; margin-bottom: 16px; font-size: 12.5px; line-height: 1.6; color: #a7f3d0;">
+          <li style="margin-bottom: 8px;"><strong>1. Cognitive Resilience:</strong> You endured erratic multi-hit walls, corporate spins, and CSS centering nightmares without abandoning the session.</li>
+          <li style="margin-bottom: 8px;"><strong>2. The Nature of Tech:</strong> You now realize that modern tech startups and proprietary AI wrappers are largely held together by caffeine, hope, and regex nobody understands.</li>
+          <li style="margin-bottom: 8px;"><strong>3. Spatial Tenacity:</strong> Whether forced to shake your peripheral or survive the timeline reset, your diagnostic endurance proved unyielding.</li>
+          <li style="margin-bottom: 8px;"><strong>4. The Core Reality:</strong> There are no shortcuts in engineering. What looks like effortless mastery from outside is usually someone frantically Googling basic syntax at 3:14 AM.</li>
+          <li style="margin-bottom: 4px; color: var(--toxic-yellow); font-weight: bold;">
+            5. Jokes apart there's a surprise, click here for surprise:
+          </li>
+        </ul>
+        <div style="text-align: center; margin-top: 10px;">
+          <button class="rickroll-btn" onclick="triggerRickroll()">🎁 CLAIM FINAL SURPRISE REWARD [CLICK HERE]</button>
+        </div>
+      `;
+    }
+
+    const state = {
+      x: 0,
+      y: 0,
+      z: -180,
+      targetX: 0,
+      targetY: 0,
+      targetZ: -180,
+      rotY: 0,
+      targetRotY: 0,
+      rotX: 0,
+      targetRotX: 0,
+      mouseOffsetX: 0,
+      currentFloor: 0,
+      unlockedFloors: new Set([0]),
+      dignity: 100,
+      lastInteraction: Date.now(),
+      crackedWalls: {},
+      wallHits: {},
+      wallThresholds: {},
+      caffeineTrapTriggered: false,
+      beggedFloors: new Set(),
+
+      spinDegreeAccumulator: 0,
+      lastReportedQuarter: 0,
+      paralysisTimer: 0,
+      centerHoldTime: 0,
+      spamKeyCount: 0,
+      spamKeyTimer: 0,
+      mouseJitterDist: 0,
+      lastMouseX: 0,
+      lastMouseY: 0,
+      wheelSpinCount: 0,
+      floor7History: [],
+
+      strafeCount: 0,
+      lastStrafeKey: '',
+      mutatedKeySpam: 0,
+      mutatedKeyTimer: 0,
+      mutatedClickCount: 0,
+      mutatedTurnCount: 0,
+      lastTurnKey: '',
+      mutatedFloor6Step: 0
+    };
+
+    for (let i = 0; i < 10; i++) {
+      state.crackedWalls[i] = { north: false, south: false, east: false, west: false };
+      state.wallHits[i] = { north: 0, south: 0, east: 0, west: 0 };
+      state.wallThresholds[i] = {
+        north: Math.floor(Math.random() * 5) + 3,
+        south: Math.floor(Math.random() * 5) + 3,
+        east:  Math.floor(Math.random() * 5) + 3,
+        west:  Math.floor(Math.random() * 5) + 3
+      };
+    }
+
+    const keys = {};
+    const BOUND = 320;
+    let typedBuffer = '';
+
+    // Audio Engine
+    let audioCtx = null;
+    let masterGain = null;
+
+    function initAudio() {
+      const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+      if (!audioCtx) {
+        audioCtx = new AudioCtxClass();
+        masterGain = audioCtx.createGain();
+        masterGain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        masterGain.connect(audioCtx.destination);
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playElevatorChime(ascending = true) {
+      if (!audioCtx) return;
+      const notes = ascending ? [392, 523.25] : [523.25, 392];
+      notes.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.16);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime + idx * 0.16);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.16 + 0.35);
+        osc.connect(gain);
+        gain.connect(masterGain);
+        osc.start(audioCtx.currentTime + idx * 0.16);
+        osc.stop(audioCtx.currentTime + idx * 0.16 + 0.35);
+      });
+    }
+
+    function playBonkSound() {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(105, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(35, audioCtx.currentTime + 0.22);
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.22);
+    }
+
+    function playWallCrackSound() {
+      initAudio();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(240, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.25);
+      gain.gain.setValueAtTime(0.22, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.25);
+    }
+
+    function playGlitchAlarm() {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+      osc.frequency.linearRampToValueAtTime(60, audioCtx.currentTime + 0.8);
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.8);
+    }
+
+    function speakRoast(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.05;
+        utterance.pitch = 0.95;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    const roastBanner = document.getElementById('roast-banner');
+    let roastTimeout = null;
+
+    function deliverRoast(text, sound = true, voice = true) {
+      roastBanner.textContent = text;
+      roastBanner.classList.add('active');
+
+      if (sound) playBonkSound();
+      if (voice) speakRoast(text);
+
+      clearTimeout(roastTimeout);
+      roastTimeout = setTimeout(() => {
+        roastBanner.classList.remove('active');
+      }, 3600);
+
+      state.dignity = Math.max(0, state.dignity - Math.floor(Math.random() * 4 + 2));
+      document.getElementById('metric-dignity').textContent = `${state.dignity}%`;
+    }
+
+    function triggerWallShake() {
+      const vp = document.getElementById('viewport');
+      vp.classList.remove('shake');
+      void vp.offsetWidth;
+      vp.classList.add('shake');
+    }
+
+    function hasCuratorClearance() {
+      if (state.currentFloor === 9) return true;
+      if (!state.beggedFloors.has(state.currentFloor)) {
+        deliverRoast("ACCESS DENIED: The simulation is dormant. Beg the Curator for clearance first.", true, true);
+        return false;
+      }
+      return true;
+    }
+
+    function buildFloorsDOM() {
+      const world = document.getElementById('world');
+      world.innerHTML = '';
+
+      FLOORS_DATA.forEach((floor, index) => {
+        const chamber = document.createElement('div');
+        chamber.className = 'chamber';
+        chamber.id = `chamber-${index}`;
+        chamber.style.transform = `translateY(${-index * 800}px)`;
+
+        const isFloor9 = (index === 9);
+        const crackedClass = isFloor9 ? 'cracked' : '';
+
+        chamber.innerHTML = `
+          <div class="plane p-floor" style="background: ${floor.bgColor}; border: 2px dashed ${floor.borderColor};"></div>
+          <div class="plane p-ceiling" style="background: radial-gradient(circle at center, #15161e 0%, #050507 80%); border: 1px solid rgba(255,255,255,0.05);"></div>
+
+          <div class="plane w-north" style="background: ${floor.bgColor}; border: 2px solid ${floor.borderColor};">
+            <div class="wall-plaque ${crackedClass}" id="plaque-${index}-north">
+              <div class="plaque-header">
+                <span style="color: ${floor.accent};">NORTH SECTOR // FRAGMENT I</span>
+                <span class="status-tag">[DECRYPTED]</span>
+              </div>
+              <div class="plaque-body" id="text-${index}-north">${isFloor9 ? floor.clues.north : ''}</div>
+              <div class="plaque-footer">
+                <span style="color:var(--matrix-green);">STATUS: RETAINED IN MEMORY</span>
+                <span>SECTOR: NORTH</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="plane w-south" style="background: ${floor.bgColor}; border: 2px solid ${floor.borderColor};">
+            <div class="wall-plaque ${crackedClass}" id="plaque-${index}-south">
+              <div class="plaque-header">
+                <span style="color: ${floor.accent};">${isFloor9 ? 'SUMMIT VAULT // EXECUTIVE MEMORANDUM' : 'SOUTH SECTOR // FRAGMENT II'}</span>
+                <span class="status-tag">[DECRYPTED]</span>
+              </div>
+              <div class="plaque-body" id="text-${index}-south">${isFloor9 ? getExecutiveLetterHTML() : ''}</div>
+              <div class="plaque-footer">
+                <span style="color:var(--matrix-green);">STATUS: RETAINED IN MEMORY</span>
+                <span>SECTOR: SOUTH</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="plane w-east" style="background: ${floor.bgColor}; border: 2px solid ${floor.borderColor};">
+            <div class="wall-plaque ${crackedClass}" id="plaque-${index}-east">
+              <div class="plaque-header">
+                <span style="color: ${floor.accent};">EAST SECTOR // FRAGMENT III</span>
+                <span class="status-tag">[DECRYPTED]</span>
+              </div>
+              <div class="plaque-body" id="text-${index}-east">${isFloor9 ? floor.clues.east : ''}</div>
+              <div class="plaque-footer">
+                <span style="color:var(--matrix-green);">STATUS: RETAINED IN MEMORY</span>
+                <span>SECTOR: EAST</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="plane w-west" style="background: ${floor.bgColor}; border: 2px solid ${floor.borderColor};">
+            <div class="wall-plaque ${crackedClass}" id="plaque-${index}-west">
+              <div class="plaque-header">
+                <span style="color: ${floor.accent};">WEST SECTOR // FRAGMENT IV</span>
+                <span class="status-tag">[DECRYPTED]</span>
+              </div>
+              <div class="plaque-body" id="text-${index}-west">${isFloor9 ? floor.clues.west : ''}</div>
+              <div class="plaque-footer">
+                <span style="color:var(--matrix-green);">STATUS: RETAINED IN MEMORY</span>
+                <span>SECTOR: WEST</span>
+              </div>
+            </div>
+          </div>
+        `;
+
+        world.appendChild(chamber);
+      });
+
+      document.getElementById('modal-letter-content').innerHTML = getExecutiveLetterHTML();
+    }
+
+    const clueBroadcast = document.getElementById('clue-broadcast');
+    let clueBroadcastTimeout = null;
+
+    function unlockWallClue(dir) {
+      const fl = state.currentFloor;
+      if (state.crackedWalls[fl][dir]) return;
+
+      state.crackedWalls[fl][dir] = true;
+      playWallCrackSound();
+
+      const plaque = document.getElementById(`plaque-${fl}-${dir}`);
+      const text = document.getElementById(`text-${fl}-${dir}`);
+      const clueContent = FLOORS_DATA[fl].clues[dir];
+
+      if (plaque && text) {
+        text.innerHTML = `<strong>DECRYPTED RIDDLE:</strong> "${clueContent}"`;
+        plaque.classList.add('cracked');
+      }
+
+      let crackedCount = 0;
+      ['north', 'south', 'east', 'west'].forEach(w => {
+        if (state.crackedWalls[fl][w]) crackedCount++;
+      });
+      document.getElementById('metric-clues').textContent = `${crackedCount} / 4 WALLS`;
+
+      clueBroadcast.innerHTML = `💥 <strong>${dir.toUpperCase()} WALL DECRYPTED:</strong> "${clueContent}"`;
+      clueBroadcast.classList.add('active');
+      clearTimeout(clueBroadcastTimeout);
+      clueBroadcastTimeout = setTimeout(() => {
+        clueBroadcast.classList.remove('active');
+      }, 5500);
+
+      deliverRoast(`💥 ${dir.toUpperCase()} CACHE MANIFESTED!`, false, false);
+    }
+
+    function unlockRandomUndecryptedWall() {
+      const fl = state.currentFloor;
+      const dirs = ['north', 'south', 'east', 'west'].filter(d => !state.crackedWalls[fl][d]);
+      if (dirs.length > 0) {
+        const chosen = dirs[Math.floor(Math.random() * dirs.length)];
+        unlockWallClue(chosen);
+      } else {
+        deliverRoast("All walls on this floor are already decrypted. Type the password!", false, true);
+      }
+    }
+
+    /* ==========================================================================
+       HOW TO PLAY POPUP LOGIC
+       ========================================================================== */
+    function openHowToPlay() {
+      document.getElementById('how-to-play-modal').classList.add('open');
+    }
+
+    function closeHowToPlay() {
+      initAudio();
+      document.getElementById('how-to-play-modal').classList.remove('open');
+    }
+
+    /* ==========================================================================
+       ROAMING EVASIVE CURATOR BUTTON LOGIC
+       ========================================================================== */
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+    let lastMouseTime = performance.now();
+    let currentMouseSpeed = 0;
+    let lastDodgeTime = 0;
+
+    function teleportBegButtonRandomly() {
+      const begBtn = document.getElementById('beg-btn');
+      if (!begBtn) return;
+
+      const margin = 50;
+      const w = begBtn.offsetWidth || 180;
+      const h = begBtn.offsetHeight || 42;
+
+      const maxX = Math.max(window.innerWidth - w - margin, margin);
+      const maxY = Math.max(window.innerHeight - h - margin, margin);
+
+      const nextX = Math.floor(Math.random() * (maxX - margin)) + margin;
+      const nextY = Math.floor(Math.random() * (maxY - margin)) + margin;
+
+      begBtn.style.left = `${nextX}px`;
+      begBtn.style.top = `${nextY}px`;
+      begBtn.style.right = 'auto';
+
+      if (Math.random() > 0.65) {
+        deliverRoast("TOO FAST! The Curator senses your aggressive haste. Creep slowly like a ghost.", false, false);
+      }
+    }
+
+    function checkBegButtonEvasion(e) {
+      const begBtn = document.getElementById('beg-btn');
+      if (!begBtn || document.getElementById('annoying-hint-modal').classList.contains('open') || document.getElementById('how-to-play-modal').classList.contains('open')) return;
+
+      const now = performance.now();
+      const dt = Math.max(now - lastMouseTime, 8);
+      const distMoved = Math.hypot(e.clientX - lastMouseX, e.clientY - lastMouseY);
+      currentMouseSpeed = distMoved / dt;
+
+      const rect = begBtn.getBoundingClientRect();
+      const btnCenterX = rect.left + rect.width / 2;
+      const btnCenterY = rect.top + rect.height / 2;
+      const distToBtn = Math.hypot(e.clientX - btnCenterX, e.clientY - btnCenterY);
+
+      const DETECTION_RADIUS = 170;
+      const SPEED_THRESHOLD = 0.22;
+
+      if (distToBtn < DETECTION_RADIUS) {
+        if (currentMouseSpeed > SPEED_THRESHOLD) {
+          if (now - lastDodgeTime > 160) {
+            lastDodgeTime = now;
+            begBtn.classList.remove('stealth');
+            teleportBegButtonRandomly();
+          }
+        } else {
+          begBtn.classList.add('stealth');
+        }
+      } else {
+        begBtn.classList.remove('stealth');
+      }
+
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+      lastMouseTime = now;
+    }
+
+    function openAnnoyingHint() {
+      initAudio();
+      const modal = document.getElementById('annoying-hint-modal');
+      const body = document.getElementById('annoying-hint-body');
+      const fl = state.currentFloor;
+      const hint = FLOORS_DATA[fl].crypticHint;
+
+      state.beggedFloors.add(fl);
+
+      state.dignity = Math.max(0, state.dignity - 5);
+      document.getElementById('metric-dignity').textContent = `${state.dignity}%`;
+
+      body.innerHTML = `
+        <p style="color: var(--toxic-yellow); margin-bottom: 8px;"><strong>[DIAGNOSTIC: VISITOR INTELLECT HAS SURRENDERED]</strong></p>
+        <p style="font-style: italic; color: #94a3b8; margin-bottom: 14px;">"Dignity penalized -5% for shameless begging. The Curator sneers at your helplessness, authorizes this floor's sensors, and mutters:"</p>
+        <p style="border-left: 3px solid var(--hazard-red); padding-left: 12px; font-weight: bold; color: #fff;">
+          "${hint}"
+        </p>
+      `;
+
+      modal.classList.add('open');
+      deliverRoast(hint, false, true);
+    }
+
+    function closeAnnoyingHint() {
+      document.getElementById('annoying-hint-modal').classList.remove('open');
+    }
+
+    // Floor 0: Wall Ramming (or Reverse Traction if Mutated)
+    function handleFloor0Collision(dir, isWalkingBackward) {
+      const fl = 0;
+      if (state.crackedWalls[fl][dir]) {
+        playBonkSound();
+        return;
+      }
+      if (!hasCuratorClearance()) return;
+
+      if (state.caffeineTrapTriggered) {
+        if (isWalkingBackward) {
+          unlockWallClue(dir);
+        } else {
+          playBonkSound();
+          deliverRoast("Timeline mutated! Walk into walls in reverse (hold S)!", false, false);
+        }
+      } else {
+        state.wallHits[fl][dir]++;
+        if (state.wallHits[fl][dir] >= state.wallThresholds[fl][dir]) {
+          unlockWallClue(dir);
+        } else {
+          playBonkSound();
+          deliverRoast(`Impact absorbed! [${state.wallHits[fl][dir]}/${state.wallThresholds[fl][dir]} hits on ${dir}]`, false, false);
+        }
+      }
+    }
+
+    // Floor 1: Corporate Spin (Continuous rotation tracking)
+    function trackFloor1ContinuousSpin(deltaDegrees) {
+      if (state.currentFloor !== 1 || state.caffeineTrapTriggered) return;
+      if (!hasCuratorClearance()) return;
+
+      state.spinDegreeAccumulator += Math.abs(deltaDegrees);
+      const currentQuarter = Math.floor(state.spinDegreeAccumulator / 90);
+
+      if (currentQuarter > state.lastReportedQuarter && currentQuarter > 0 && currentQuarter < 4) {
+        state.lastReportedQuarter = currentQuarter;
+        deliverRoast(`Spin progress: ${currentQuarter}/4 of rotation cycle executed. Keep spinning!`, false, false);
+      }
+
+      if (state.spinDegreeAccumulator >= 360) {
+        state.spinDegreeAccumulator = 0;
+        state.lastReportedQuarter = 0;
+        deliverRoast("Corporate spin quota met! Buzzwords shaken loose.", false, false);
+        unlockRandomUndecryptedWall();
+      }
+    }
+
+    function trackMutatedStrafe(key) {
+      if (state.currentFloor !== 1 || !state.caffeineTrapTriggered) return;
+      if (!hasCuratorClearance()) return;
+
+      if (key === 'a' || key === 'd') {
+        if (key !== state.lastStrafeKey) {
+          state.strafeCount++;
+          state.lastStrafeKey = key;
+          if (state.strafeCount >= 6) {
+            state.strafeCount = 0;
+            deliverRoast("Strafe oscillation threshold achieved! Clue manifested.", false, false);
+            unlockRandomUndecryptedWall();
+          }
+        }
+      }
+    }
+
+    // Floor 2: Academic Paralysis (or Tremor Shake if Mutated)
+    function resetParalysisTimer() {
+      if (state.currentFloor !== 2 || state.caffeineTrapTriggered) return;
+      state.paralysisTimer = 0;
+    }
+
+    function checkParalysisStillness() {
+      if (state.currentFloor === 2 && !state.caffeineTrapTriggered) {
+        if (!state.beggedFloors.has(2)) return;
+        state.paralysisTimer += 0.5;
+        if (state.paralysisTimer >= 3.5) {
+          state.paralysisTimer = 0;
+          deliverRoast("Total academic paralysis achieved! Fear revealed a memory fragment.", false, false);
+          unlockRandomUndecryptedWall();
+        }
+      }
+    }
+    setInterval(checkParalysisStillness, 500);
+
+    function trackMutatedTremor() {
+      if (state.currentFloor !== 2 || !state.caffeineTrapTriggered) return;
+      if (!hasCuratorClearance()) return;
+
+      const now = Date.now();
+      if (now - state.mutatedKeyTimer > 2000) {
+        state.mutatedKeySpam = 1;
+      } else {
+        state.mutatedKeySpam++;
+      }
+      state.mutatedKeyTimer = now;
+
+      if (state.mutatedKeySpam >= 10) {
+        state.mutatedKeySpam = 0;
+        deliverRoast("Tremor frequency exceeded! Despair clue revealed.", false, false);
+        unlockRandomUndecryptedWall();
+      }
+    }
+
+    // Floor 3: CSS Dead Center Alignment (or Corner Slide if Mutated)
+    function checkFloor3Centering() {
+      if (state.currentFloor !== 3) return;
+      if (!state.beggedFloors.has(3)) return;
+
+      if (state.caffeineTrapTriggered) {
+        const isCornerX = Math.abs(state.x) > (BOUND - 45);
+        const isCornerZ = Math.abs(state.z) > (BOUND - 45);
+        if (isCornerX && isCornerZ) {
+          deliverRoast("Corner perimeter grazed! CSS grid matrix unlocked.", false, false);
+          unlockRandomUndecryptedWall();
+        }
+      } else {
+        const distFromCenter = Math.sqrt(state.x * state.x + state.z * state.z);
+        if (distFromCenter < 35) {
+          state.centerHoldTime += 0.5;
+          if (state.centerHoldTime >= 2.0) {
+            state.centerHoldTime = 0;
+            deliverRoast("Div perfectly centered! CSS layout gods appeased.", false, false);
+            unlockRandomUndecryptedWall();
+          }
+        } else {
+          state.centerHoldTime = 0;
+        }
+      }
+    }
+    setInterval(checkFloor3Centering, 500);
+
+    // Floor 4: Rapid Keystroke Spam (or Click Rapidly if Mutated)
+    function trackFloor4Spam() {
+      if (state.currentFloor !== 4 || state.caffeineTrapTriggered) return;
+      if (!hasCuratorClearance()) return;
+
+      const now = Date.now();
+      if (now - state.spamKeyTimer > 1500) {
+        state.spamKeyCount = 1;
+      } else {
+        state.spamKeyCount++;
+      }
+      state.spamKeyTimer = now;
+
+      if (state.spamKeyCount >= 6) {
+        state.spamKeyCount = 0;
+        deliverRoast("Ctrl+C / Ctrl+V rapid spam accepted! Fragment copied into clipboard.", false, false);
+        unlockRandomUndecryptedWall();
+      }
+    }
+
+    // Floor 5: Mouse Jitter (or Alternate Q/E if Mutated)
+    window.addEventListener('mousemove', (e) => {
+      state.lastInteraction = Date.now();
+      resetParalysisTimer();
+
+      checkBegButtonEvasion(e);
+
+      const dx = Math.abs(e.clientX - state.lastMouseX);
+      const dy = Math.abs(e.clientY - state.lastMouseY);
+
+      if (state.currentFloor === 5 && !state.caffeineTrapTriggered && state.beggedFloors.has(5)) {
+        state.mouseJitterDist += (dx + dy);
+        if (state.mouseJitterDist > 2400) {
+          state.mouseJitterDist = 0;
+          deliverRoast("Impostor anxiety jitter detected! The facade cracked.", false, false);
+          unlockRandomUndecryptedWall();
+        }
+      }
+
+      const normX = (e.clientX / window.innerWidth) - 0.5;
+      const normY = (e.clientY / window.innerHeight) - 0.5;
+      state.targetRotX = -normY * 18;
+      state.mouseOffsetX = normX * 16;
+    });
+
+    function trackMutatedTurn(key) {
+      if (state.currentFloor !== 5 || !state.caffeineTrapTriggered) return;
+      if (!hasCuratorClearance()) return;
+
+      if (key === 'q' || key === 'e') {
+        if (key !== state.lastTurnKey) {
+          state.mutatedTurnCount++;
+          state.lastTurnKey = key;
+          if (state.mutatedTurnCount >= 4) {
+            state.mutatedTurnCount = 0;
+            deliverRoast("Alternate turn masquerade cleared! Pretend clue decrypted.", false, false);
+            unlockRandomUndecryptedWall();
+          }
+        }
+      }
+    }
+
+    // Floor 6: Wheel Turbo Spin
+    window.addEventListener('wheel', (e) => {
+      if (document.getElementById('how-to-play-modal').classList.contains('open')) return;
+      initAudio();
+      state.lastInteraction = Date.now();
+      resetParalysisTimer();
+
+      if (state.currentFloor === 6 && !state.caffeineTrapTriggered) {
+        if (state.beggedFloors.has(6)) {
+          state.wheelSpinCount++;
+          if (state.wheelSpinCount >= 8) {
+            state.wheelSpinCount = 0;
+            deliverRoast("Turbo wheel speed cracked corrupted buffer!", false, false);
+            unlockRandomUndecryptedWall();
+          }
+        }
+      }
+
+      const forward = e.deltaY > 0 ? -32 : 32;
+      applyMovement(0, forward);
+    });
+
+    // Floor 7: Unique Pattern per Clue
+    const FLOOR_7_PATTERNS = {
+      north: ['north', 'south', 'north'],
+      south: ['south', 'north', 'south'],
+      east:  ['north', 'west', 'east'],
+      west:  ['south', 'east', 'west']
+    };
+
+    function handleFloor7Circuit(hitDir) {
+      if (!hasCuratorClearance()) return;
+
+      state.floor7History.push(hitDir);
+      if (state.floor7History.length > 4) {
+        state.floor7History.shift();
+      }
+
+      const currentHist = state.floor7History;
+      let matchedAny = false;
+
+      for (const [wallTarget, pattern] of Object.entries(FLOOR_7_PATTERNS)) {
+        if (!state.crackedWalls[7][wallTarget]) {
+          if (currentHist.length >= pattern.length) {
+            const slice = currentHist.slice(-pattern.length);
+            const matches = slice.every((val, idx) => val === pattern[idx]);
+            if (matches) {
+              unlockWallClue(wallTarget);
+              state.floor7History = [];
+              deliverRoast(`PATTERN MATCHED! Decrypted ${wallTarget.toUpperCase()} clue!`, false, false);
+              matchedAny = true;
+              break;
+            }
+          }
+        }
+      }
+
+      if (!matchedAny) {
+        deliverRoast(`Touched ${hitDir.toUpperCase()}. Trail: [${currentHist.join(' -> ')}]`, false, false);
+      }
+    }
+
+    // Floor 8: Corner Scanner
+    function checkFloor8Corners() {
+      if (state.currentFloor !== 8) return;
+      if (!state.beggedFloors.has(8)) return;
+
+      const isCornerX = Math.abs(state.x) > (BOUND - 40);
+      const isCornerZ = Math.abs(state.z) > (BOUND - 40);
+      if (isCornerX && isCornerZ) {
+        let cornerDir = 'north';
+        if (state.z > 0 && state.x > 0) cornerDir = 'south';
+        else if (state.z > 0 && state.x < 0) cornerDir = 'west';
+        else if (state.z < 0 && state.x > 0) cornerDir = 'east';
+
+        if (!state.crackedWalls[8][cornerDir]) {
+          unlockWallClue(cornerDir);
+          deliverRoast(`Corner beacon locked! Triangulated ${cornerDir.toUpperCase()} plaque.`, false, false);
+        }
+      }
+    }
+
+    // --- Clue Review Drawer (On-Screen Button Only) ---
+    function toggleClueDrawer() {
+      const modal = document.getElementById('clue-drawer-modal');
+      const isOpen = modal.classList.contains('open');
+
+      if (isOpen) {
+        modal.classList.remove('open');
+      } else {
+        const fl = state.currentFloor;
+        document.getElementById('drawer-title').textContent = `DECRYPTED MEMORY ARCHIVE // ${FLOORS_DATA[fl].name}`;
+        const list = document.getElementById('drawer-list');
+        list.innerHTML = '';
+
+        const directions = ['north', 'south', 'east', 'west'];
+
+        directions.forEach(dir => {
+          const isUnlocked = state.crackedWalls[fl][dir];
+          const div = document.createElement('div');
+          div.className = `drawer-item ${isUnlocked ? 'unlocked' : ''}`;
+
+          if (isUnlocked) {
+            div.innerHTML = `
+              <div style="font-weight:900; color:var(--matrix-green); margin-bottom:4px;">${dir.toUpperCase()} SECTOR [DECRYPTED]:</div>
+              <div style="color:#f1f5f9;">"${FLOORS_DATA[fl].clues[dir]}"</div>
+            `;
+          } else {
+            div.innerHTML = `
+              <div style="color:#64748b; font-weight:bold;">${dir.toUpperCase()} SECTOR:</div>
+              <div style="color:#475569;">[LOCKED] Beg the Curator to activate this floor's sensors.</div>
+            `;
+          }
+          list.appendChild(div);
+        });
+
+        modal.classList.add('open');
+      }
+    }
+
+    // --- Keypad UI ---
+    function renderKeypad() {
+      const grid = document.getElementById('floor-grid');
+      grid.innerHTML = '';
+
+      for (let i = 0; i < 10; i++) {
+        const btn = document.createElement('button');
+        const isUnlocked = state.unlockedFloors.has(i);
+        const isActive = state.currentFloor === i;
+
+        btn.className = `floor-key ${isUnlocked ? 'unlocked' : ''} ${isActive ? 'active' : ''}`;
+        btn.id = `key-fl-${i}`;
+        btn.textContent = isUnlocked ? `FL ${i}` : `🔒 ${i}`;
+
+        btn.addEventListener('click', () => {
+          attemptFloorJump(i, btn);
+        });
+
+        grid.appendChild(btn);
+      }
+    }
+
+    function attemptFloorJump(targetFloor, btnElement) {
+      initAudio();
+
+      if (state.unlockedFloors.has(targetFloor)) {
+        if (targetFloor === state.currentFloor) return;
+        teleportToFloor(targetFloor);
+      } else {
+        btnElement.classList.add('denied');
+        setTimeout(() => btnElement.classList.remove('denied'), 400);
+        deliverRoast("Floor locked! Did you think clicking a button would magically teleport you?", true, true);
+      }
+    }
+
+    // --- Floor Teleportation ---
+    const transPopup = document.getElementById('trans-popup');
+    const flash67Popup = document.getElementById('flash-67-popup');
+    let transTimeout = null;
+
+    function teleportToFloor(targetFloor) {
+      const fromFloor = state.currentFloor;
+      const isAscending = targetFloor > fromFloor;
+      state.currentFloor = targetFloor;
+
+      state.targetY = -targetFloor * 800;
+      state.targetZ = -180;
+      state.targetX = 0;
+
+      state.floor7History = [];
+      state.spinDegreeAccumulator = 0;
+      state.lastReportedQuarter = 0;
+      state.paralysisTimer = 0;
+      state.centerHoldTime = 0;
+
+      document.getElementById('metric-floor').textContent = FLOORS_DATA[targetFloor].name;
+
+      let crackedCount = 0;
+      ['north', 'south', 'east', 'west'].forEach(w => {
+        if (state.crackedWalls[targetFloor][w]) crackedCount++;
+      });
+      document.getElementById('metric-clues').textContent = `${crackedCount} / 4 WALLS`;
+
+      renderKeypad();
+      playElevatorChime(isAscending);
+
+      if (fromFloor === 6 && targetFloor === 7) {
+        flash67Popup.style.display = 'grid';
+        setTimeout(() => {
+          flash67Popup.style.display = 'none';
+        }, 210);
+      } else {
+        document.getElementById('trans-title').textContent = `ASCENDING TO FL ${targetFloor}`;
+
+        let clearNote = FLOORS_DATA[targetFloor].name;
+        if (isAscending && targetFloor < 9) {
+          clearNote = SAVAGE_CLEAR_ROASTS[Math.floor(Math.random() * SAVAGE_CLEAR_ROASTS.length)];
+          deliverRoast(clearNote, false, true);
+        }
+        document.getElementById('trans-desc').textContent = clearNote;
+        transPopup.classList.add('show');
+
+        clearTimeout(transTimeout);
+        transTimeout = setTimeout(() => {
+          transPopup.classList.remove('show');
+        }, 1600);
+      }
+
+      if (targetFloor === 9) {
+        ['north', 'south', 'east', 'west'].forEach(dir => {
+          state.crackedWalls[9][dir] = true;
+          const pl = document.getElementById(`plaque-9-${dir}`);
+          if (pl) pl.classList.add('cracked');
+        });
+        document.getElementById('metric-clues').textContent = `4 / 4 WALLS`;
+        deliverRoast("Welcome to the Summit Vault. All records decrypted. Review the South Wall.", false, true);
+      }
+    }
+
+    // --- CAFFEINE SPELLING ERROR TRAP (MANDATORY TIMELINE RESET) ---
+    const CAFFEINE_MISSPELLINGS = ["caffiene", "caffein", "caffien", "cafiene", "cafeine"];
+
+    function triggerCaffeineTimelineReset() {
+      state.caffeineTrapTriggered = true;
+      state.beggedFloors.clear();
+      playGlitchAlarm();
+      document.body.classList.add('spasm-mode');
+      setTimeout(() => document.body.classList.remove('spasm-mode'), 1200);
+
+      for (let i = 0; i < MUTATED_DATA_0_TO_6.length; i++) {
+        const m = MUTATED_DATA_0_TO_6[i];
+        FLOORS_DATA[i].name = m.name;
+        FLOORS_DATA[i].nextPassphrase = m.nextPassphrase;
+        FLOORS_DATA[i].crypticHint = m.crypticHint;
+        FLOORS_DATA[i].clues = m.clues;
+
+        state.crackedWalls[i] = { north: false, south: false, east: false, west: false };
+        state.wallHits[i] = { north: 0, south: 0, east: 0, west: 0 };
+      }
+
+      buildFloorsDOM();
+      state.unlockedFloors = new Set([0]);
+      teleportToFloor(0);
+
+      deliverRoast(
+        "SPELLING DISASTER! It is 'C-A-F-F-E-I-N-E'! Progress reset to zero. Floor mechanics and passphrases have mutated. You must beg the curator again.",
+        true,
+        true
+      );
+    }
+
+    // --- Passphrase Verification ---
+    function checkPassphrases(buffer) {
+      if (state.currentFloor === 7 && !state.caffeineTrapTriggered) {
+        for (const typo of CAFFEINE_MISSPELLINGS) {
+          if (buffer.endsWith(typo)) {
+            triggerCaffeineTimelineReset();
+            return;
+          }
+        }
+      }
+
+      const currentFloorData = FLOORS_DATA[state.currentFloor];
+      const expectedNextPassphrase = currentFloorData.nextPassphrase;
+
+      if (expectedNextPassphrase && buffer.endsWith(expectedNextPassphrase)) {
+        const nextFloor = state.currentFloor + 1;
+        if (!state.unlockedFloors.has(nextFloor)) {
+          state.unlockedFloors.add(nextFloor);
+          playElevatorChime(true);
+          deliverRoast(`CORRECT PASSPHRASE '${expectedNextPassphrase.toUpperCase()}'! ASCENDING TO FL ${nextFloor}.`, false, true);
+          teleportToFloor(nextFloor);
+          return;
+        }
+      }
+
+      for (let i = 0; i < FLOORS_DATA.length; i++) {
+        const otherPass = FLOORS_DATA[i].passphrase;
+        if (otherPass && buffer.endsWith(otherPass)) {
+          if (i > state.currentFloor + 1) {
+            deliverRoast("Sequence Violation! You cannot skip floors. Solve your current level first.", true, true);
+            return;
+          }
+        }
+      }
+    }
+
+    function openTerminal() {
+      document.getElementById('terminal-modal').classList.add('open');
+    }
+
+    function closeTerminal() {
+      document.getElementById('terminal-modal').classList.remove('open');
+      document.getElementById('clue-drawer-modal').classList.remove('open');
+      closeAnnoyingHint();
+      closeHowToPlay();
+    }
+
+    function triggerRickroll() {
+      window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+      deliverRoast("NEVER GONNA GIVE YOU UP! You survived the entire tower only to be rickrolled at the summit.", false, true);
+    }
+
+    window.addEventListener('click', (e) => {
+      initAudio();
+      if (state.currentFloor === 4 && state.caffeineTrapTriggered) {
+        if (!hasCuratorClearance()) return;
+        state.mutatedClickCount++;
+        if (state.mutatedClickCount >= 5) {
+          state.mutatedClickCount = 0;
+          deliverRoast("Rapid click quota reached! Paste clue decrypted.", false, false);
+          unlockRandomUndecryptedWall();
+        }
+      }
+    });
+
+    window.addEventListener('keydown', (e) => {
+      // If How to Play popup is open, allow Enter or Escape to dismiss it
+      if (document.getElementById('how-to-play-modal').classList.contains('open')) {
+        if (e.key === 'Escape' || e.key === 'Enter') {
+          closeHowToPlay();
+        }
+        return;
+      }
+
+      initAudio();
+      state.lastInteraction = Date.now();
+      resetParalysisTimer();
+      const k = e.key.toLowerCase();
+      keys[k] = true;
+
+      if (e.key === 'Escape') closeTerminal();
+
+      if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        typedBuffer += k;
+        if (typedBuffer.length > 25) {
+          typedBuffer = typedBuffer.slice(-25);
+        }
+        document.getElementById('metric-buffer').textContent = `[${typedBuffer.slice(-8)}]`;
+        checkPassphrases(typedBuffer);
+      }
+
+      if (!e.repeat && (k === 'q' || k === 'e')) {
+        trackMutatedTurn(k);
+      }
+
+      trackFloor4Spam();
+      trackMutatedStrafe(k);
+      trackMutatedTremor();
+    });
+
+    window.addEventListener('keyup', (e) => {
+      keys[e.key.toLowerCase()] = false;
+    });
+
+    // --- Movement Physics & Boundary Rebound ---
+    let lastCollisionTime = 0;
+
+    function applyMovement(strafe, forward) {
+      const headingRad = (-state.targetRotY * Math.PI) / 180;
+      const sin = Math.sin(headingRad);
+      const cos = Math.cos(headingRad);
+
+      const moveX = (forward * sin) + (strafe * cos);
+      const moveZ = (-forward * cos) + (strafe * sin);
+
+      let nextX = state.targetX + moveX;
+      let nextZ = state.targetZ + moveZ;
+
+      let collided = false;
+      let hitDir = null;
+
+      if (nextX > BOUND) {
+        collided = true;
+        hitDir = 'east';
+        nextX = BOUND - 16;
+      } else if (nextX < -BOUND) {
+        collided = true;
+        hitDir = 'west';
+        nextX = -BOUND + 16;
+      }
+
+      if (nextZ > BOUND) {
+        collided = true;
+        hitDir = 'south';
+        nextZ = BOUND - 16;
+      } else if (nextZ < -BOUND) {
+        collided = true;
+        hitDir = 'north';
+        nextZ = -BOUND + 16;
+      }
+
+      state.targetX = nextX;
+      state.targetZ = nextZ;
+
+      checkFloor8Corners();
+
+      if (collided && hitDir) {
+        const now = Date.now();
+        if (now - lastCollisionTime > 260) {
+          lastCollisionTime = now;
+          triggerWallShake();
+
+          if (state.currentFloor === 0) {
+            handleFloor0Collision(hitDir, forward < 0);
+          } else if (state.currentFloor === 7) {
+            handleFloor7Circuit(hitDir);
+          } else if (state.currentFloor === 6 && state.caffeineTrapTriggered) {
+            if (hasCuratorClearance()) {
+              const req = ['north', 'east', 'south'];
+              if (hitDir === req[state.mutatedFloor6Step]) {
+                state.mutatedFloor6Step++;
+                if (state.mutatedFloor6Step >= 3) {
+                  state.mutatedFloor6Step = 0;
+                  deliverRoast("Reboot sequence completed! Reboot clue decrypted.", false, false);
+                  unlockRandomUndecryptedWall();
+                }
+              } else {
+                state.mutatedFloor6Step = 0;
+              }
+            }
+          } else {
+            playBonkSound();
+          }
+        }
+      }
+    }
+
+    function processInput() {
+      if (document.getElementById('how-to-play-modal').classList.contains('open') ||
+          document.getElementById('terminal-modal').classList.contains('open') ||
+          document.getElementById('clue-drawer-modal').classList.contains('open') ||
+          document.getElementById('annoying-hint-modal').classList.contains('open')) {
+        return;
+      }
+
+      const speed = 4.2;
+      let forward = 0;
+      let strafe = 0;
+
+      if (keys['w'] || keys['arrowup']) forward += speed;
+      if (keys['s'] || keys['arrowdown']) forward -= speed;
+      if (keys['a'] || keys['arrowleft']) strafe -= speed;
+      if (keys['d'] || keys['arrowright']) strafe += speed;
+
+      // CONTINUOUS 3D ROTATION WHILE Q OR E IS HELD
+      const rotSpeed = 2.4;
+      let isRotating = false;
+
+      if (keys['q']) {
+        state.targetRotY += rotSpeed;
+        trackFloor1ContinuousSpin(rotSpeed);
+        isRotating = true;
+      }
+      if (keys['e']) {
+        state.targetRotY -= rotSpeed;
+        trackFloor1ContinuousSpin(rotSpeed);
+        isRotating = true;
+      }
+
+      if (isRotating || forward !== 0 || strafe !== 0) {
+        resetParalysisTimer();
+      }
+
+      if (forward !== 0 || strafe !== 0) {
+        applyMovement(strafe, forward);
+      }
+    }
+
+    // --- Main Render Loop (Coordinates & Smooth 3D Yaw Interpolation) ---
+    const cameraEl = document.getElementById('camera');
+    const worldEl = document.getElementById('world');
+    const metricBearing = document.getElementById('metric-bearing');
+    const metricCoords = document.getElementById('metric-coords');
+
+    function render() {
+      requestAnimationFrame(render);
+
+      try {
+        processInput();
+
+        state.x += (state.targetX - state.x) * 0.12;
+        state.y += (state.targetY - state.y) * 0.08;
+        state.z += (state.targetZ - state.z) * 0.12;
+        state.rotX += (state.targetRotX - state.rotX) * 0.1;
+
+        // Smooth 3D Yaw Damping from targetRotY + mouse offset
+        const effectiveTargetRotY = state.targetRotY + (state.mouseOffsetX || 0);
+        state.rotY += (effectiveTargetRotY - state.rotY) * 0.15;
+
+        cameraEl.style.transform = `
+          rotateX(${state.rotX}deg)
+          rotateY(${-state.rotY}deg)
+        `;
+
+        worldEl.style.transform = `
+          translate3d(${-state.x}px, ${-state.y}px, ${-state.z}px)
+        `;
+
+        metricCoords.textContent = `X: ${Math.round(state.x)} | Z: ${Math.round(state.z)}`;
+
+        const normAngle = ((Math.round(-state.rotY) % 360) + 360) % 360;
+        let dir = 'N';
+        if (normAngle >= 45 && normAngle < 135) dir = 'E';
+        else if (normAngle >= 135 && normAngle < 225) dir = 'S';
+        else if (normAngle >= 225 && normAngle < 315) dir = 'W';
+
+        metricBearing.textContent = `${normAngle}° [${dir}]`;
+      } catch (err) {
+        console.error("Render loop recovered from error:", err);
+      }
+    }
+
+    // Initialize DOM, Keypad, Render loop, and auto-show How to Play on load
+    buildFloorsDOM();
+    renderKeypad();
+    render();
+
+    // Auto-display How to Play popup on load
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', openHowToPlay);
+    } else {
+      openHowToPlay();
+    }
+  </script>
+</body>
+</html>
